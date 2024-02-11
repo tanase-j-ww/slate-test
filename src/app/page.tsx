@@ -1,13 +1,24 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Editor, Transforms, createEditor } from "slate";
-import { Editable, Slate, withReact } from "slate-react";
+import { Descendant, Editor, Transforms, createEditor } from "slate";
+import {
+  Editable,
+  RenderElementProps,
+  RenderLeafProps,
+  Slate,
+  withReact,
+} from "slate-react";
 
 // TypeScript users only add this code
 import { BaseEditor } from "slate";
 import { ReactEditor } from "slate-react";
-export type CustomEditor = BaseEditor & ReactEditor;
+
+interface CustomReactEditor extends BaseEditor, ReactEditor {
+  type: "paragraph" | "heading" | "code" | null | undefined;
+}
+
+export type CustomEditor = BaseEditor & ReactEditor & CustomReactEditor;
 
 export type ParagraphElement = {
   type: "paragraph";
@@ -20,9 +31,19 @@ export type HeadingElement = {
   children: CustomText[];
 };
 
-export type CustomElement = ParagraphElement | HeadingElement;
+export type CodeElement = {
+  type: "code" | null | undefined;
+  children: CustomText[];
+};
 
-export type FormattedText = { text: string; bold?: true };
+export type CustomElement = ParagraphElement | HeadingElement | CodeElement;
+
+export type FormattedText = {
+  text: string;
+  bold?: true;
+  type?: "paragraph" | "code" | "heading";
+  children?: CustomText[];
+};
 
 export type CustomText = FormattedText;
 
@@ -34,7 +55,7 @@ declare module "slate" {
   }
 }
 
-const initialValue = [
+const initialValue: Descendant[] = [
   {
     type: "paragraph",
     children: [{ text: "A line of text in a paragraph." }],
@@ -43,7 +64,7 @@ const initialValue = [
 const Home = () => {
   const [editor] = useState(() => withReact(createEditor()));
 
-  const renderElement = useCallback((props) => {
+  const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
       case "code":
         return <CodeElement {...props} />;
@@ -52,7 +73,7 @@ const Home = () => {
     }
   }, []);
 
-  const renderLeaf = useCallback((props) => {
+  const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
   }, []);
 
@@ -106,7 +127,7 @@ const Home = () => {
 };
 export default Home;
 
-const CodeElement = (props) => {
+const CodeElement = (props: RenderElementProps) => {
   return (
     <pre {...props.attributes}>
       <code>{props.children}</code>
@@ -114,12 +135,12 @@ const CodeElement = (props) => {
   );
 };
 
-const DefaultElement = (props) => {
+const DefaultElement = (props: RenderElementProps) => {
   return <p {...props.attributes}>{props.children}</p>;
 };
 
 // Define a React component to render leaves with bold text.
-const Leaf = (props) => {
+const Leaf = (props: RenderLeafProps) => {
   return (
     <span
       {...props.attributes}
@@ -132,20 +153,20 @@ const Leaf = (props) => {
 
 // Define our own custom set of helpers.
 const CustomEditor = {
-  isBoldMarkActive(editor) {
+  isBoldMarkActive(editor: CustomEditor) {
     const marks = Editor.marks(editor);
     return marks ? marks.bold === true : false;
   },
 
-  isCodeBlockActive(editor) {
-    const [match] = Editor.nodes(editor, {
+  isCodeBlockActive(editor: CustomEditor) {
+    const match = Editor.nodes(editor, {
       match: (n) => n.type === "code",
     });
-
+    console.log(match);
     return !!match;
   },
 
-  toggleBoldMark(editor) {
+  toggleBoldMark(editor: CustomEditor) {
     const isActive = CustomEditor.isBoldMarkActive(editor);
     if (isActive) {
       Editor.removeMark(editor, "bold");
@@ -154,12 +175,15 @@ const CustomEditor = {
     }
   },
 
-  toggleCodeBlock(editor) {
+  toggleCodeBlock(editor: CustomEditor) {
     const isActive = CustomEditor.isCodeBlockActive(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? null : "code" },
-      { match: (n) => Editor.isBlock(editor, n) }
+      {
+        match: (n) => n.type === "code",
+        // Editor.isBlock(editor, n)
+      }
     );
   },
 };
