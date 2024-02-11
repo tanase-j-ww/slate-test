@@ -1,0 +1,21 @@
+{
+  "typed functional component": {
+    "scope": "typescript,typescriptreact",
+    "prefix": "rtfc",
+    "body": [
+      "import React from \"react\";",
+      "",
+      "interface ${TM_FILENAME_BASE}Props {",
+      " $1",
+      "}",
+      "",
+      "export function ${TM_FILENAME_BASE} ({$1}: ${TM_FILENAME_BASE}Props): React.ReactElement {",
+      "",
+      " return (",
+      "	<>",
+      "",
+      "	</>",
+      " )}",
+    ],
+  },
+}

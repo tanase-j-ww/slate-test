@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Slate-tutorial
 
-## Getting Started
+## For developers
 
-First, run the development server:
+### Environments
+
+- [node](https://nodejs.org/ja/download): 20:10.0 (LTS)
+- [npm](https://nodejs.org/ja/download): 10.2.3
+
+### Installation
+
+1. パッケージのインストール
+
+```bash
+npm install
+```
+
+### Usage
+
+#### Start deployment server
+
+開発用サーバーの立ち上げ
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```plaintext
+🐞 バグとパフォーマンス
+#🐛 :bug: バグ修正
+#🚑 :ambulance: 重大なバグの修正
+#🚀 :rocket: パフォーマンス改善
+#💻 コードの品質とスタイル
+#👍 :+1: 機能改善
+#♻️ :recycle: リファクタリング
+#👕 :shirt: Lintエラーの修正やコードスタイルの修正
 
-## Learn More
+🎨 UI/UXとデザイン
+#✨ :sparkles: 新しい機能を追加
+#🎨 :art: デザイン変更のみ
 
-To learn more about Next.js, take a look at the following resources:
+🛠️ 開発ツールと設定
+#🚧 :construction: WIP (Work in Progress)
+#⚙ :gear: config変更
+#📦 :package: 新しい依存関係追加
+#🆙 :up: 依存パッケージなどのアップデート
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+📝 ドキュメントとコメント
+#📝 :memo: 文言修正
+#📚 :books: ドキュメント
+#💡 :bulb: 新しいアイデアやコメント追加
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+🛡️ セキュリティ
+#👮 :op: セキュリティ関連の改善
 
-## Deploy on Vercel
+🧪 テストとCI
+#💚 :green_heart: テストやCIの修正・改善
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+🗂️ ファイルとフォルダ操作
+#📂 :file_folder: フォルダの操作
+#🚚 :truck: ファイル移動
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+📊 ログとトラッキング
+#💢 :anger: コンフリクト
+#🔊 :loud_sound: ログ追加
+#🔇 :mute: ログ削除
+#📈 :chart_with_upwards_trend: アナリティクスやトラッキングコード追加
+
+💡 その他
+#🧐 :monocle_face: コードのリーディングや疑問
+#🍻 :beers: 書いているときに楽しかったコード
+#🙈 :see_no_evil: .gitignore追加
+#🛠️ :hammer_and_wrench: バグ修正や基本的な問題解決
+```
