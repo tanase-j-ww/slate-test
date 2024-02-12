@@ -42,7 +42,6 @@ export type FormattedText = {
   text: string;
   bold?: true;
   color?: { color?: string; isActive: boolean };
-  // color?: string;
   type?: "paragraph" | "code" | "heading";
   children?: CustomText[];
 };
@@ -82,69 +81,85 @@ const Home = () => {
 
   return (
     // Add a toolbar with buttons that call the same methods.
-    <Slate editor={editor} initialValue={initialValue}>
-      <div>
-        <button
-          onMouseDown={(event) => {
-            event.preventDefault();
-            CustomEditor.toggleBoldMark(editor);
-          }}
-        >
-          Bold
-        </button>
-        <button
-          onMouseDown={(event) => {
-            event.preventDefault();
-            CustomEditor.toggleCodeBlock(editor);
-          }}
-        >
-          Code Block
-        </button>
-        <button
-          onMouseDown={(event) => {
-            event.preventDefault();
-            CustomEditor.toggleColorMark(editor, color);
-          }}
-        >
-          Color
-        </button>
-        <input
-          type="color"
-          name="color"
-          id="color"
-          onChange={(event) => {
-            event.preventDefault();
-            const value = event.currentTarget.value;
-            if (value) CustomEditor.setColorValue(editor, value);
-            setColor(value);
-          }}
-        />
-      </div>
-      <Editable
+    <div>
+      <Slate
         editor={editor}
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-        onKeyDown={(event) => {
-          if (!event.ctrlKey) {
-            return;
-          }
-
-          switch (event.key) {
-            case "`": {
-              event.preventDefault();
-              CustomEditor.toggleCodeBlock(editor);
-              break;
-            }
-
-            case "b": {
-              event.preventDefault();
-              CustomEditor.toggleBoldMark(editor);
-              break;
-            }
+        initialValue={initialValue}
+        onChange={(value) => {
+          const isAstChange = editor.operations.some(
+            (op) => "set_selection" !== op.type
+          );
+          if (isAstChange) {
+            // Save the value to Local Storage.
+            const content = JSON.stringify(value, null, 2);
+            console.log(content);
+            localStorage.setItem("content", content);
           }
         }}
-      />
-    </Slate>
+      >
+        <div>
+          <button
+            onMouseDown={(event) => {
+              event.preventDefault();
+              CustomEditor.toggleBoldMark(editor);
+            }}
+          >
+            Bold
+          </button>
+          <button
+            onMouseDown={(event) => {
+              event.preventDefault();
+              CustomEditor.toggleCodeBlock(editor);
+            }}
+          >
+            Code Block
+          </button>
+          <button
+            onMouseDown={(event) => {
+              event.preventDefault();
+              CustomEditor.toggleColorMark(editor, color);
+            }}
+          >
+            Color
+          </button>
+          <input
+            type="color"
+            name="color"
+            id="color"
+            onChange={(event) => {
+              event.preventDefault();
+              const value = event.currentTarget.value;
+              if (value) CustomEditor.setColorValue(editor, value);
+              setColor(value);
+            }}
+          />
+        </div>
+        <Editable
+          editor={editor}
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          onKeyDown={(event) => {
+            if (!event.ctrlKey) {
+              return;
+            }
+
+            switch (event.key) {
+              case "`": {
+                event.preventDefault();
+                CustomEditor.toggleCodeBlock(editor);
+                break;
+              }
+
+              case "b": {
+                event.preventDefault();
+                CustomEditor.toggleBoldMark(editor);
+                break;
+              }
+            }
+          }}
+        />
+      </Slate>
+    </div>
   );
 };
 export default Home;
