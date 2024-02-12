@@ -65,6 +65,7 @@ const initialValue: Descendant[] = [
 const Home = () => {
   const [editor] = useState(() => withReact(createEditor()));
   const [color, setColor] = useState<string>("#ffffff");
+  const [jsonBody, setJsonBody] = useState("");
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
@@ -92,6 +93,7 @@ const Home = () => {
           if (isAstChange) {
             // Save the value to Local Storage.
             const content = JSON.stringify(value, null, 2);
+            setJsonBody(content);
             console.log(content);
             localStorage.setItem("content", content);
           }
@@ -159,6 +161,12 @@ const Home = () => {
           }}
         />
       </Slate>
+      {jsonBody.split("\n").map((json, index) => (
+        <pre key={index}>
+          {json}
+          <br />
+        </pre>
+      ))}
     </div>
   );
 };
