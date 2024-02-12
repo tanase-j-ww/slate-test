@@ -41,6 +41,8 @@ export type CustomElement = ParagraphElement | HeadingElement | CodeElement;
 export type FormattedText = {
   text: string;
   bold?: true;
+  color?: { color?: string; isActive: boolean };
+  // color?: string;
   type?: "paragraph" | "code" | "heading";
   children?: CustomText[];
 };
@@ -63,6 +65,7 @@ const initialValue: Descendant[] = [
 ];
 const Home = () => {
   const [editor] = useState(() => withReact(createEditor()));
+  const [color, setColor] = useState<string>("#ffffff");
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
@@ -97,6 +100,25 @@ const Home = () => {
         >
           Code Block
         </button>
+        <button
+          onMouseDown={(event) => {
+            event.preventDefault();
+            CustomEditor.toggleColorMark(editor, color);
+          }}
+        >
+          Color
+        </button>
+        <input
+          type="color"
+          name="color"
+          id="color"
+          onChange={(event) => {
+            event.preventDefault();
+            const value = event.currentTarget.value;
+            if (value) CustomEditor.setColorValue(editor, value);
+            setColor(value);
+          }}
+        />
       </div>
       <Editable
         editor={editor}
@@ -144,7 +166,10 @@ const Leaf = (props: RenderLeafProps) => {
   return (
     <span
       {...props.attributes}
-      style={{ fontWeight: props.leaf.bold ? "bold" : "normal" }}
+      style={{
+        fontWeight: props.leaf.bold ? "bold" : "normal",
+        color: props.leaf.color?.isActive ? props.leaf.color.color : "",
+      }}
     >
       {props.children}
     </span>
@@ -158,11 +183,20 @@ const CustomEditor = {
     return marks ? marks.bold === true : false;
   },
 
+  isColorMarkActive(editor: CustomEditor) {
+    const marks = Editor.marks(editor);
+    return marks?.color?.isActive;
+  },
+  getCurrentColorValue(editor: CustomEditor) {
+    const marks = Editor.marks(editor);
+    console.log(marks, marks?.color);
+    return marks?.color?.color;
+  },
+
   isCodeBlockActive(editor: CustomEditor) {
     const match = Editor.nodes(editor, {
       match: (n) => n.type === "code",
     });
-    console.log(match);
     return !!match;
   },
 
@@ -173,6 +207,27 @@ const CustomEditor = {
     } else {
       Editor.addMark(editor, "bold", true);
     }
+  },
+
+  toggleColorMark(editor: CustomEditor, color: string) {
+    const isActive = CustomEditor.isColorMarkActive(editor);
+    if (isActive) {
+      Editor.addMark(editor, "color", {
+        isActive: !isActive,
+        color: color,
+      });
+    } else {
+      Editor.addMark(editor, "color", {
+        isActive: !isActive,
+        color: color,
+      });
+    }
+  },
+  setColorValue(editor: CustomEditor, value: string) {
+    Editor.addMark(editor, "color", {
+      isActive: true,
+      color: value,
+    });
   },
 
   toggleCodeBlock(editor: CustomEditor) {
